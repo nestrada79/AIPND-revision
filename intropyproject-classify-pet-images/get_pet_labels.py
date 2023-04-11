@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 # */AIPND-revision/intropyproject-classify-pet-images/get_pet_labels.py
 #                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                  
+# PROGRAMMER: Natasha E. Estrada
+# DATE CREATED: 04/11/2023                                 
 # REVISED DATE: 
 # PURPOSE: Create the function get_pet_labels that creates the pet labels from 
 #          the image's filename. This function inputs: 
@@ -23,6 +23,7 @@ from os import listdir
 #       in the return statement with results_dic dictionary that you create 
 #       with this function
 # 
+
 def get_pet_labels(image_dir):
     """
     Creates a dictionary of pet labels (results_dic) based upon the filenames 
@@ -40,6 +41,36 @@ def get_pet_labels(image_dir):
       List. The list contains for following item:
          index 0 = pet image label (string)
     """
-    # Replace None with the results_dic dictionary that you created with this
-    # function
-    return None
+    # Create an empty dictionary to store the results
+    results_dic = {}
+
+    # Get the list of filenames in the image directory
+    filename_list = listdir(image_dir)
+
+    # Loop through each filename
+    for filename in filename_list:
+        # Check if the filename starts with a period (hidden file), if so skip it
+        if filename.startswith('.'):
+            continue
+
+        # Split the filename by underscores to extract the pet label
+        label_list = filename.lower().split('_')
+
+        # Create an empty string to store the pet label
+        pet_label = ''
+
+        # Loop through each word in the label list and add it to the pet label string
+        for word in label_list:
+            # Strip any whitespace and digits from the word
+            word = word.strip('1234567890')
+            # Add the word to the pet label string with a space if it's not empty
+            if len(word) > 0:
+                pet_label += word + ' '
+
+        # Strip any whitespace from the pet label string
+        pet_label = pet_label.strip()
+
+        # Add the filename and pet label to the results dictionary
+        results_dic[filename] = [pet_label]
+
+    return results_dic
