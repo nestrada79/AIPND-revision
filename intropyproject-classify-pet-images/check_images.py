@@ -3,9 +3,9 @@
 # */AIPND-revision/intropyproject-classify-pet-images/check_images.py
 #
 # TODO 0: Add your information below for Programmer & Date Created.                                                                             
-# PROGRAMMER: 
-# DATE CREATED:                                  
-# REVISED DATE: 
+# PROGRAMMER: Natasha E. Estrada
+# DATE CREATED:  04/07/2023                                
+# REVISED DATE: 04/11/2023
 # PURPOSE: Classifies pet images using a pretrained CNN model, compares these
 #          classifications to the true identity of the pets in the images, and
 #          summarizes how well the CNN performed on the image classification task. 
@@ -20,7 +20,7 @@
 #      python check_images.py --dir <directory with images> --arch <model>
 #             --dogfile <file that contains dognames>
 #   Example call:
-#    python check_images_solution.py --dir pet_images/ --arch vgg --dogfile dognames.txt
+#    python check_images.py --dir pet_images/ --arch vgg --dogfile dognames.txt
 ##
 
 # Imports python modules
@@ -42,6 +42,9 @@ def main():
     # TODO 0: Measures total program runtime by collecting start time
     start_time = time()
     
+    sleep(75)
+    
+    
     # TODO 1: Define get_input_args function within the file get_input_args.py
     # This function retrieves 3 Command Line Arugments from user as input from
     # the user running the program from a terminal window. This function returns
@@ -60,13 +63,13 @@ def main():
     #             get_pet_labels(in_arg.dir)
     # This function creates the results dictionary that contains the results, 
     # this dictionary is returned from the function call as the variable results
-    results = get_pet_labels(None)
+    results = get_pet_labels(in_arg.dir)
 
     # Function that checks Pet Images in the results Dictionary using results    
     check_creating_pet_image_labels(results)
 
 
-    # TODO 3: Define classify_images function within the file classify_images.py
+    # TODO 3: Define classify_images function within the file classiy_images.py
     # Once the classify_images function has been defined replace first 'None' 
     # in the function call with in_arg.dir and replace the last 'None' in the
     # function call with in_arg.arch  Once you have done the replacements your
