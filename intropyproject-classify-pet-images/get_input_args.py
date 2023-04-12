@@ -47,8 +47,6 @@ def get_input_args():
     
     # Replace None with parser.parse_args() parsed argument collection that 
     # you created with this function 
-     # Parse the arguments
-    in_args = parser.parse_args()
 
     # Return the arguments
-    return in_args
+    return parser.parse_args()
