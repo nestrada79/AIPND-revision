@@ -3,7 +3,7 @@
 # */AIPND-revision/intropyproject-classify-pet-images/get_pet_labels.py
 #                                                                             
 # PROGRAMMER: Natasha E. Estrada
-# DATE CREATED: 04/11/2023                                 
+# DATE CREATED:  04/11/2023                                
 # REVISED DATE: 
 # PURPOSE: Create the function get_pet_labels that creates the pet labels from 
 #          the image's filename. This function inputs: 
@@ -18,11 +18,6 @@
 ##
 # Imports python modules
 from os import listdir
-
-# TODO 2: Define get_pet_labels function below please be certain to replace None
-#       in the return statement with results_dic dictionary that you create 
-#       with this function
-# 
 
 def get_pet_labels(image_dir):
     """
@@ -41,36 +36,35 @@ def get_pet_labels(image_dir):
       List. The list contains for following item:
          index 0 = pet image label (string)
     """
-    # Create an empty dictionary to store the results
-    results_dic = {}
-
-    # Get the list of filenames in the image directory
-    filename_list = listdir(image_dir)
-
-    # Loop through each filename
-    for filename in filename_list:
-        # Check if the filename starts with a period (hidden file), if so skip it
-        if filename.startswith('.'):
-            continue
-
-        # Split the filename by underscores to extract the pet label
-        label_list = filename.lower().split('_')
-
-        # Create an empty string to store the pet label
-        pet_label = ''
-
-        # Loop through each word in the label list and add it to the pet label string
-        for word in label_list:
-            # Strip any whitespace and digits from the word
-            word = word.strip('1234567890')
-            # Add the word to the pet label string with a space if it's not empty
-            if len(word) > 0:
-                pet_label += word + ' '
-
-        # Strip any whitespace from the pet label string
-        pet_label = pet_label.strip()
-
-        # Add the filename and pet label to the results dictionary
-        results_dic[filename] = [pet_label]
-
+    # Creates list of files in directory
+    in_files = listdir(image_dir)
+    
+    # Creates empty dictionary for the results (pet labels, etc.)
+    results_dic = dict()
+   
+    # Processes through each file in the directory, extracting only the words
+    # of the file that contain the pet image label
+    for idx in range(0, len(in_files), 1):
+       
+       # Skips file if starts with . (like .DS_Store of Mac OSX) because it 
+       # isn't an pet image file
+       if in_files[idx][0] != ".":
+           
+           # Extracts the pet label from the filename
+           file_name = in_files[idx]
+           pet_label = ""
+           word_list = file_name.lower().split("_")
+           for word in word_list:
+               if word.isalpha():
+                   pet_label += word + " "
+           pet_label = pet_label.strip()
+           
+           # If filename doesn't already exist in dictionary add it and its
+           # pet label, otherwise print a warning message
+           if in_files[idx] not in results_dic:
+               results_dic[in_files[idx]] = [pet_label]
+           else:
+               print("** Warning: Duplicate files exist in directory:", 
+                     in_files[idx])
+ 
     return results_dic
