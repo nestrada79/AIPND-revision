@@ -3,10 +3,8 @@
 # */AIPND-revision/intropyproject-classify-pet-images/adjust_results4_isadog.py
 #                                                                             
 # PROGRAMMER: Natasha E. Estrada
-# DATE CREATED: 04/11/2023                                
+# DATE CREATED: 04/12/2023                                
 # REVISED DATE: 
-
-
 # PURPOSE: Create a function adjust_results4_isadog that adjusts the results 
 #          dictionary to indicate whether or not the pet image label is of-a-dog, 
 #          and to indicate whether or not the classifier image label is of-a-dog.
@@ -39,51 +37,72 @@
 #       results_dic dictionary that is passed into the function is a mutable 
 #       data type so no return is needed.
 # 
-
 def adjust_results4_isadog(results_dic, dogfile):
     """
     Adjusts the results dictionary to determine if classifier correctly 
-    classified images 'as a dog' or 'not a dog' especially when not a match.
+    classified images 'as a dog' or 'not a dog' especially when not a match. 
     Demonstrates if model architecture correctly classifies dog images even if
     it gets dog breed wrong (not a match).
     Parameters:
-        results_dic - Dictionary with 'key' as image filename and 'value' as a
-        List. Where the list will contain the following items:
-            index 0 = pet image label (string)
-            index 1 = classifier label (string)
-            index 2 = 1/0 (int) where 1 = match between pet image and classifier
-                      labels and 0 = no match between labels
-            --- where index 3 & index 4 are added by this function ---
-            index 3 = 1/0 (int) where 1 = pet image 'is-a' dog and 
-                      0 = pet Image 'is-NOT-a' dog.
-            index 4 = 1/0 (int) where 1 = classifier classifies image 
-                      'as-a' dog and 0 = classifier classifies image 
-                      'as-NOT-a' dog.
-        dogfile - A text file that contains names of all dogs from the classifier
-                  function and dog names from the pet image files (string).
+      results_dic - Dictionary with 'key' as image filename and 'value' as a 
+                    List. Where the list will contain the following items: 
+                  index 0 = pet image label (string)
+                  index 1 = classifier label (string)
+                  index 2 = 1/0 (int)  where 1 = match between pet image
+                    and classifer labels and 0 = no match between labels
+                ------ where index 3 & index 4 are added by this function -----
+                 NEW - index 3 = 1/0 (int)  where 1 = pet image 'is-a' dog and 
+                            0 = pet Image 'is-NOT-a' dog. 
+                 NEW - index 4 = 1/0 (int)  where 1 = Classifier classifies image 
+                            'as-a' dog and 0 = Classifier classifies image  
+                            'as-NOT-a' dog.
+     dogfile - A text file that contains names of all dogs from the classifier
+               function and dog names from the pet image files. This file has 
+               one dog name per line dog names are all in lowercase with 
+               spaces separating the distinct words of the dog name. Dog names
+               from the classifier function can be a string of dog names separated
+               by commas when a particular breed of dog has multiple dog names 
+               associated with that breed (ex. maltese dog, maltese terrier, 
+               maltese) (string - indicates text file's filename)
     Returns:
-        None - results_dic is mutable data type so no return needed.
+           None - results_dic is mutable data type so no return needed.
     """
 
-    # Create a dictionary of dog names
-    with open(dogfile, 'r') as file:
-        dog_names = file.readlines()
-        dog_names = [name.strip() for name in dog_names]
-    dog_dict = {name: 1 for name in dog_names}
+    # Create an empty dictionary to store all the dog names from the dogfile
+    dognames_dic = dict()
 
-    # Iterate through the results dictionary and adjust results for dogs
+    # Open the dogfile and read each line
+    with open(dogfile, "r") as infile:
+        line = infile.readline()
+
+        # Read each line until the end of the file
+        while line != "":
+            # Remove any trailing white space, such as newline character
+            dogname = line.rstrip()
+
+            # Add the dog name to the dognames dictionary if it's not already there
+            if dogname not in dognames_dic:
+                dognames_dic[dogname] = 1
+
+            # Read the next line in the file
+            line = infile.readline()
+                
+    # Iterate through the results dictionary
     for key in results_dic:
-        pet_label = results_dic[key][0]
-        classifier_label = results_dic[key][1]
-
-        # Check if pet label is a dog and adjust accordingly
-        if pet_label in dog_dict:
-            results_dic[key].append(1)
+        # Check if the pet label is a dog (found in the dognames dictionary)
+        if results_dic[key][0] in dognames_dic:
+            # Check if the classifier label is also a dog (found in the dognames dictionary)
+            if results_dic[key][1] in dognames_dic:
+                # Both labels are dogs, so append (1,1) to the list
+                results_dic[key].extend((1, 1))
+            else:
+                # Pet label is a dog, but the classifier label is not, so append (1,0) to the list
+                results_dic[key].extend((1, 0))
         else:
-            results_dic[key].append(0)
-
-        # Check if classifier label is a dog and adjust accordingly
-        if any(dog in classifier_label for dog in dog_dict):
-            results_dic[key].append(1)
-        else:
-            results_dic[key].append(0)
+            # Pet label is not a dog, check if the classifier label is a dog
+            if results_dic[key][1] in dognames_dic:
+                # Pet label is not a dog, but classifier label is, so append (0,1) to the list
+                results_dic[key].extend((0, 1))
+            else:
+                # Neither label is a dog, so append (0,0) to the list
+                results_dic[key].extend((0, 0))
