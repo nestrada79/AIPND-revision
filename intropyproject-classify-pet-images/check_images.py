@@ -37,14 +37,14 @@ from adjust_results4_isadog import adjust_results4_isadog
 from calculates_results_stats import calculates_results_stats
 from print_results import print_results
 
+#Imports pretty table
+from prettytable import PrettyTable
+
 # Main program function defined below
 def main():
     # TODO 0: Measures total program runtime by collecting start time
     start_time = time()
-    
-    sleep(75)
-    
-    
+   
     # TODO 1: Define get_input_args function within the file get_input_args.py
     # This function retrieves 3 Command Line Arugments from user as input from
     # the user running the program from a terminal window. This function returns
@@ -56,15 +56,12 @@ def main():
     check_command_line_arguments(in_arg)
 
     
-    # TODO 2: Define get_pet_labels function within the file get_pet_labels.py
-    # Once the get_pet_labels function has been defined replace 'None' 
-    # in the function call with in_arg.dir  Once you have done the replacements
-    # your function call should look like this: 
-    #             get_pet_labels(in_arg.dir)
+ 
+   
     # This function creates the results dictionary that contains the results, 
     # this dictionary is returned from the function call as the variable results
     
-    get_pet_labels(in_arg.dir)
+    results = get_pet_labels(in_arg.dir)
 
     # Function that checks Pet Images in the results Dictionary using results    
     check_creating_pet_image_labels(results)
@@ -134,6 +131,32 @@ def main():
     print("\n** Total Elapsed Runtime:",
           str(int((tot_time/3600)))+":"+str(int((tot_time%3600)/60))+":"
           +str(int((tot_time%3600)%60)) )
+    
+    
+    # Create and populate the first table
+num_images = PrettyTable()
+num_images.field_names = ["# Total Images", "# Dog Images", "# Not-a-Dog Images"]
+num_images.add_row([40, 30, 10])
+
+# Print the first table
+print(num_images)
+print("\n\n\n")
+
+# Create and populate the second table
+results_table = PrettyTable()
+results_table.field_names = ["CNN Model Architecture", "% Not-a-Dog Correct", "% Dogs Correct", "% Breeds Correct", "% Labels Matched", "Runtime (seconds)"]
+results_table.add_row(["ResNet", "90%", "100%", "90%", "82.5%", 44])
+results_table.add_row(["AlexNet", "100%", "100%", "80%", "75%", 15])
+results_table.add_row(["VGG", "100%", "100%", "93.3%", "87.5%", 88])
+
+# Print the second table
+print(results_table)
+    
+print("VGG was able to classify 'dogs' and 'not-a-dog' with 100% accuracy and had\n"
+      "the best performance regarding breed classification with 93.3% accuracy.\n"
+      "AlexNet was the most efficient with the fastest runtime at only 3 seconds\n"
+      "but still images 100% accuracy for identifying dogs correctly.")
+
     
 
 # Call to main function to run the program
