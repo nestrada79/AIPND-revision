@@ -3,7 +3,7 @@
 # */AIPND-revision/intropyproject-classify-pet-images/classify_images.py
 #                                                                             
 # PROGRAMMER: Natasha E. Estrada
-# DATE CREATED: 04/11/2023                                 
+# DATE CREATED:   4/11/2023                              
 # REVISED DATE: 
 # PURPOSE: Create a function classify_images that uses the classifier function 
 #          to create the classifier labels and then compares the classifier 
@@ -21,67 +21,32 @@
 #
 ##
 # Imports classifier function for using CNN to classify images 
-from classifier import classifier 
 
-# TODO 3: Define classify_images function below, specifically replace the None
-#       below by the function definition of the classify_images function. 
-#       Notice that this function doesn't return anything because the 
-#       results_dic dictionary that is passed into the function is a mutable 
-#       data type so no return is needed.
-# 
 from classifier import classifier
 
 def classify_images(images_dir, results_dic, model):
     """
     Creates classifier labels with classifier function, compares pet labels to 
     the classifier labels, and adds the classifier label and the comparison of 
-    the labels to the results dictionary using the extend function. Be sure to
-    format the classifier labels so that they will match your pet image labels.
-    The format will include putting the classifier labels in all lower case 
-    letters and strip the leading and trailing whitespace characters from them.
-    For example, the Classifier function returns = 'Maltese dog, Maltese terrier, Maltese' 
-    so the classifier label = 'maltese dog, maltese terrier, maltese'.
-    Recall that dog names from the classifier function can be a string of dog 
-    names separated by commas when a particular breed of dog has multiple dog 
-    names associated with that breed. For example, you will find pet images of
-    a 'dalmatian'(pet label) and it will match to the classifier label 
-    'dalmatian, coach dog, carriage dog' if the classifier function correctly 
-    classified the pet images of dalmatians.
-    Parameters: 
-      images_dir - The (full) path to the folder of images that are to be
-                   classified by the classifier function (string)
-      results_dic - Results Dictionary with 'key' as image filename and 'value'
-                    as a List. Where the list will contain the following items: 
-                  index 0 = pet image label (string)
-                  NEW - index 1 = classifier label (string)
-                  NEW - index 2 = 1/0 (int)  where 1 = match between pet image
-                    and classifer labels and 0 = no match between labels
-      model - Indicates which CNN model architecture will be used by the 
-              classifier function to classify the pet images,
-              values must be either: resnet alexnet vgg (string)
-     Returns:
-           None - results_dic is mutable data type so no return needed.         
+    the labels to the results dictionary using the extend function. 
     """
-    # Loop through each key-value pair in the results dictionary
-    for key, value in results_dic.items():
-        # Use the classifier function to create the classifier label for the image
-        image_path = images_dir + key
-        classifier_label = classifier(image_path, model).lower().strip()
+    # Process all files in the results_dic - use images_dir to give fullpath
+    # that indicates the folder and the filename (key) to be used in the 
+    # classifier function
+    for key in results_dic:
+       
+       # Runs classifier function to classify the images 
+       model_label = classifier(images_dir+key, model)
 
-        # Add the classifier label to the results dictionary
-        value.append(classifier_label)
-
-        # Compare the pet label and the classifier label
-        pet_label = value[0]
-        match = 0
-        if pet_label in classifier_label:
-            # Check if the pet label is a whole word in the classifier label
-            pet_words = pet_label.split()
-            classifier_words = classifier_label.split(',')
-            for pet_word in pet_words:
-                if pet_word in classifier_words:
-                    match = 1
-                    break
-
-        # Add the match result to the results dictionary
-        value.append(match)
+       # Processes the results so they can be compared with pet image labels
+       # set labels to lowercase and strip whitespace
+       model_label = model_label.lower().strip()
+       truth = results_dic[key][0]
+       truth = truth.lower().strip()
+              
+       # Adds classifier label and the value of 1 (match) or 0 (not a match) 
+       # to the results_dic dictionary for the key indicated by the variable key 
+       if truth in model_label:
+           results_dic[key].extend([model_label, 1])
+       else:
+           results_dic[key].extend([model_label, 0])
